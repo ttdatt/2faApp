@@ -1,0 +1,21 @@
+diff --git a/node_modules/react-native-macos/Libraries/AppDelegate/RCTAppDelegate.mm b/node_modules/react-native-macos/Libraries/AppDelegate/RCTAppDelegate.mm
+index e4c38b8..cc76a50 100644
+--- a/node_modules/react-native-macos/Libraries/AppDelegate/RCTAppDelegate.mm
++++ b/node_modules/react-native-macos/Libraries/AppDelegate/RCTAppDelegate.mm
+@@ -93,14 +93,14 @@ static NSString *const kRNConcurrentRoot = @"concurrentRoot";
+ 
+   return YES;
+ #else // [macOS
+-  NSRect frame = NSMakeRect(0,0,1024,768);
++  NSRect frame = NSMakeRect(0,0,480,768);
+   self.window = [[NSWindow alloc] initWithContentRect:NSZeroRect
+                                             styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable
+                                               backing:NSBackingStoreBuffered
+                                                 defer:NO];
+   self.window.title = self.moduleName;
+   self.window.autorecalculatesKeyViewLoop = YES;
+-  NSViewController *rootViewController = [NSViewController new];
++  NSViewController *rootViewController = [self createRootViewController];
+   rootViewController.view = rootView;
+   rootView.frame = frame;
+   self.window.contentViewController = rootViewController;
