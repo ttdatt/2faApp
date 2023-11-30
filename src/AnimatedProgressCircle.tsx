@@ -20,18 +20,20 @@ const circumference = 2 * Math.PI * radius;
 
 const TIME_FRAME = 30;
 
+const getRemainingSeconds = () => {
+  'worklet';
+  return TIME_FRAME - ((new Date().getTime() / 1000) % TIME_FRAME) + 1;
+};
+
 export const ProgressCircleComponent = memo(({onFinishStep}: {onFinishStep: () => void}) => {
-  const timer = useSharedValue(TIME_FRAME);
+  const timer = useSharedValue(getRemainingSeconds());
 
   useEffect(() => {
-    const currentTimestamp = new Date().getTime();
-    const remainingSeconds = Math.floor(TIME_FRAME - ((currentTimestamp / 1000) % TIME_FRAME)) + 1;
-
+    const remainingSeconds = getRemainingSeconds();
     timer.value = remainingSeconds;
-
     timer.value = withTiming(0, {duration: remainingSeconds * 1000, easing: Easing.linear}, () => {
       runOnJS(onFinishStep)();
-      timer.value = TIME_FRAME;
+      timer.value = getRemainingSeconds();
       timer.value = withRepeat(
         withTiming(0, {duration: TIME_FRAME * 1000, easing: Easing.linear}, () => {
           runOnJS(onFinishStep)();
@@ -46,7 +48,7 @@ export const ProgressCircleComponent = memo(({onFinishStep}: {onFinishStep: () =
   });
 
   const text = useDerivedValue(() => {
-    return Math.ceil(timer.value).toString();
+    return Math.floor(timer.value).toString();
   });
 
   return (
