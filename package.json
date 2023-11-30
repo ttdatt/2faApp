@@ -8,7 +8,9 @@
     "macos": "react-native run-macos",
     "lint": "eslint .",
     "start": "react-native start",
-    "test": "jest"
+    "test": "jest",
+    "pod": "cd macos && bundle exec pod install",
+    "postinstall": "npx patch-package"
   },
   "dependencies": {
     "immer": "^10.0.2",
@@ -16,11 +18,12 @@
     "lodash": "^4.17.21",
     "lz-string": "^1.5.0",
     "react": "18.2.0",
-    "react-native": "0.72.6",
+    "react-native": "0.72.7",
     "react-native-fs": "^2.20.0",
-    "react-native-macos": "^0.72.1",
+    "react-native-macos": "0.72.10",
+    "react-native-reanimated": "^3.6.0",
     "react-native-svg": "^13.9.0",
-    "react-native-toast-notifications": "^3.3.1",
+    "react-native-toast-notifications": "^3.4.0",
     "zustand": "^4.3.8"
   },
   "devDependencies": {

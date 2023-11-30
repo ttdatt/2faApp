@@ -1,4 +1,4 @@
-import React, {useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {ScrollView, Text, View, TouchableOpacity, TextInput, StyleSheet} from 'react-native-macos';
 import {getToken} from './utils';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const ListItem = ({x}: {x: OtpItemInterface}) => {
+const ListItem = memo(({x}: {x: OtpItemInterface}) => {
   const currentTimestamp = useAuthStore(s => s.currentTimestamp);
   const toast = useToast();
 
@@ -59,7 +59,7 @@ const ListItem = ({x}: {x: OtpItemInterface}) => {
       </>
     </TouchableOpacity>
   );
-};
+});
 
 const App = () => {
   const originData = useRef<DataInterface>();
@@ -101,6 +101,7 @@ const App = () => {
     init();
   }, [init]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   const onChangeText = useCallback(
     debouce(text => {
       if (!originData.current) return;

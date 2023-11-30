@@ -3,5 +3,6 @@ module.exports = {
   extends: '@react-native',
   rules: {
     curly: ['error', 'multi-line'],
+    'react-native/no-inline-styles': 'off',
   },
 };
