@@ -13,7 +13,6 @@
     "postinstall": "npx patch-package"
   },
   "dependencies": {
-    "immer": "^10.0.2",
     "jssha": "^3.3.0",
     "lodash": "^4.17.21",
     "lz-string": "^1.5.0",
@@ -23,8 +22,7 @@
     "react-native-macos": "0.72.10",
     "react-native-reanimated": "^3.6.0",
     "react-native-svg": "^13.9.0",
-    "react-native-toast-notifications": "^3.4.0",
-    "zustand": "^4.3.8"
+    "react-native-toast-notifications": "^3.4.0"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

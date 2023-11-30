@@ -7,6 +7,7 @@ import Animated, {
   useDerivedValue,
   withRepeat,
   Easing,
+  runOnJS,
 } from 'react-native-reanimated';
 
 Animated.addWhitelistedNativeProps({text: true});
@@ -19,7 +20,7 @@ const circumference = 2 * Math.PI * radius;
 
 const TIME_FRAME = 30;
 
-export const ProgressCircleComponent = memo(() => {
+export const ProgressCircleComponent = memo(({onFinishStep}: {onFinishStep: () => void}) => {
   const timer = useSharedValue(TIME_FRAME);
 
   useEffect(() => {
@@ -29,13 +30,16 @@ export const ProgressCircleComponent = memo(() => {
     timer.value = remainingSeconds;
 
     timer.value = withTiming(0, {duration: remainingSeconds * 1000, easing: Easing.linear}, () => {
+      runOnJS(onFinishStep)();
       timer.value = TIME_FRAME;
       timer.value = withRepeat(
-        withTiming(0, {duration: TIME_FRAME * 1000, easing: Easing.linear}),
+        withTiming(0, {duration: TIME_FRAME * 1000, easing: Easing.linear}, () => {
+          runOnJS(onFinishStep)();
+        }),
         -1,
       );
     });
-  }, [timer]);
+  }, [onFinishStep, timer]);
 
   const animatedStrokeDashoffset = useDerivedValue(() => {
     return circumference * (1 - timer.value / TIME_FRAME);

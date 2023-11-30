@@ -1,11 +1,10 @@
-import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
 import {ScrollView, Text, View, TouchableOpacity, TextInput, StyleSheet} from 'react-native-macos';
 import {getToken} from './utils';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {MyClipboardModule as Clipboard, eventEmitter, open_file} from './module';
 import debouce from 'lodash/debounce';
 import {ProgressCircleComponent} from './AnimatedProgressCircle';
-import {useAuthStore} from './store';
 import {DataInterface, OtpItemInterface} from './types';
 import {ToastProvider, useToast} from 'react-native-toast-notifications';
 import {compressToUTF16, decompressFromUTF16} from 'lz-string';
@@ -32,13 +31,13 @@ const styles = StyleSheet.create({
 });
 
 const ListItem = memo(({x}: {x: OtpItemInterface}) => {
-  const currentTimestamp = useAuthStore(s => s.currentTimestamp);
+  const [otp, setOtp] = useState<string>(getToken(x.secret, new Date().getTime()));
   const toast = useToast();
 
-  const otp = useMemo(() => {
-    return getToken(x.secret, currentTimestamp);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [Math.floor(currentTimestamp / 1000 / 30), x.secret]);
+  const onFinishStep = useCallback(() => {
+    const currentTimestamp = new Date().getTime();
+    setOtp(getToken(x.secret, currentTimestamp));
+  }, [x.secret]);
 
   return (
     <TouchableOpacity
@@ -55,7 +54,7 @@ const ListItem = memo(({x}: {x: OtpItemInterface}) => {
           <Text style={{fontSize: 32}}>{otp}</Text>
           <Text style={{fontSize: 18}}>{x.otp.account}</Text>
         </View>
-        <ProgressCircleComponent />
+        <ProgressCircleComponent onFinishStep={onFinishStep} />
       </>
     </TouchableOpacity>
   );
@@ -64,7 +63,6 @@ const ListItem = memo(({x}: {x: OtpItemInterface}) => {
 const App = () => {
   const originData = useRef<DataInterface>();
   const [items, setItems] = useState<OtpItemInterface[]>([]);
-  const init = useAuthStore(s => s.init);
 
   useEffect(() => {
     const openFileListener = eventEmitter.addListener(open_file, async path => {
@@ -96,10 +94,6 @@ const App = () => {
       openFileListener.remove();
     };
   }, []);
-
-  useEffect(() => {
-    init();
-  }, [init]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const onChangeText = useCallback(
