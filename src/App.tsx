@@ -1,5 +1,5 @@
 import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
-import {ScrollView, Text, View, TouchableOpacity, TextInput, StyleSheet} from 'react-native-macos';
+import {ScrollView, Text, View, TouchableOpacity, TextInput, StyleSheet} from 'react-native';
 import {getToken} from './utils';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {MyClipboardModule as Clipboard, eventEmitter, open_file} from './module';
@@ -39,23 +39,20 @@ const ListItem = memo(({x}: {x: OtpItemInterface}) => {
     setOtp(getToken(x.secret, currentTimestamp));
   }, [x.secret]);
 
+  const onPress = useCallback(async () => {
+    const result = await Clipboard.setString(otp);
+    toast.hideAll();
+    toast.show(result);
+  }, [otp, toast]);
+
   return (
-    <TouchableOpacity
-      activeOpacity={0.5}
-      style={styles.itemContainer}
-      onPress={async () => {
-        const result = await Clipboard.setString(otp);
-        toast.hideAll();
-        toast.show(result);
-      }}>
-      <>
-        <View>
-          <Text style={{fontSize: 18}}>{x.name}</Text>
-          <Text style={{fontSize: 32}}>{otp}</Text>
-          <Text style={{fontSize: 18}}>{x.otp.account}</Text>
-        </View>
-        <ProgressCircleComponent onFinishStep={onFinishStep} />
-      </>
+    <TouchableOpacity activeOpacity={0.5} style={styles.itemContainer} onPress={onPress}>
+      <View>
+        <Text style={{fontSize: 18}}>{x.name}</Text>
+        <Text style={{fontSize: 32}}>{otp}</Text>
+        <Text style={{fontSize: 18}}>{x.otp.account}</Text>
+      </View>
+      <ProgressCircleComponent onFinishStep={onFinishStep} />
     </TouchableOpacity>
   );
 });
