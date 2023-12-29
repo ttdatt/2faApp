@@ -72,6 +72,7 @@ export const ProgressCircleComponent = memo(({onFinishStep}: {onFinishStep: () =
           underlineColorAndroid="transparent"
           editable={false}
           style={styles.text}
+          //@ts-ignore
           text={text}
         />
       </View>
