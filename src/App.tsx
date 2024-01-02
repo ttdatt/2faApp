@@ -1,5 +1,5 @@
 import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
-import {ScrollView, Text, View, TouchableOpacity, TextInput, StyleSheet} from 'react-native';
+import {FlatList, Text, View, TouchableOpacity, TextInput, StyleSheet} from 'react-native-macos';
 import {getToken} from './utils';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {MyClipboardModule as Clipboard, eventEmitter, open_file} from './module';
@@ -114,13 +114,16 @@ const App = () => {
     <ToastProvider>
       <View style={{flex: 1, backgroundColor: Colors.lighter}}>
         <TextInput autoFocus style={styles.input} onChangeText={onChangeText} />
-        <ScrollView
+        <FlatList
           contentInsetAdjustmentBehavior="automatic"
-          contentContainerStyle={styles.scroll}>
-          {items?.map(x => {
-            return <ListItem key={x.name + x.otp.account} x={x} />;
-          })}
-        </ScrollView>
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={styles.scroll}
+          keyExtractor={item => item.name + item.otp.account}
+          data={items}
+          renderItem={({item}) => {
+            return <ListItem x={item} />;
+          }}
+        />
       </View>
     </ToastProvider>
   );

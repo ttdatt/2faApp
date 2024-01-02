@@ -1,5 +1,5 @@
 import React, {memo, useEffect} from 'react';
-import {View, StyleSheet, TextInput} from 'react-native';
+import {View, StyleSheet, TextInput} from 'react-native-macos';
 import {Svg, Circle} from 'react-native-svg';
 import Animated, {
   useSharedValue,
