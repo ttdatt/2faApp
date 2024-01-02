@@ -356,6 +356,7 @@
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "AuthApp-iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
@@ -377,6 +378,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = "AuthApp-iOS/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				MARKETING_VERSION = 1.1;
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-ObjC",
