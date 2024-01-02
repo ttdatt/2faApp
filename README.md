@@ -1,1 +1,1 @@
-2fa app for MacOS
+Support import from 2FAS
