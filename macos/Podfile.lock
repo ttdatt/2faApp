@@ -1055,6 +1055,10 @@ PODS:
     - React-perflogger (= 0.73.1)
   - RNFS (2.20.0):
     - React-Core
+  - RNGestureHandler (2.14.0):
+    - glog
+    - RCT-Folly (= 2022.05.16.00)
+    - React-Core
   - RNReanimated (3.6.1):
     - glog
     - RCT-Folly (= 2022.05.16.00)
@@ -1117,6 +1121,7 @@ DEPENDENCIES:
   - React-utils (from `../node_modules/react-native-macos/ReactCommon/react/utils`)
   - ReactCommon/turbomodule/core (from `../node_modules/react-native-macos/ReactCommon`)
   - RNFS (from `../node_modules/react-native-fs`)
+  - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNSVG (from `../node_modules/react-native-svg`)
   - Yoga (from `../node_modules/react-native-macos/ReactCommon/yoga`)
@@ -1225,6 +1230,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-macos/ReactCommon"
   RNFS:
     :path: "../node_modules/react-native-fs"
+  RNGestureHandler:
+    :path: "../node_modules/react-native-gesture-handler"
   RNReanimated:
     :path: "../node_modules/react-native-reanimated"
   RNSVG:
@@ -1283,11 +1290,12 @@ SPEC CHECKSUMS:
   React-utils: 9b1df4c7eb86a02607d61db23652559780031449
   ReactCommon: 608b12d4b6d2fa209101a960a202721d33cd35b6
   RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
+  RNGestureHandler: 1670a58a885b78d4e0f46c6a35267c36d8be8183
   RNReanimated: 57f436e7aa3d277fbfed05e003230b43428157c0
   RNSVG: d00c8f91c3cbf6d476451313a18f04d220d4f396
   SocketRocket: abac6f5de4d4d62d24e11868d7a2f427e0ef940d
   Yoga: 5f6d85ca2ac7a018ea0ff4c3da3e5514a3f2149c
 
-PODFILE CHECKSUM: 4304adc6c0326fc46349754cc0b8dccbfc2dd175
+PODFILE CHECKSUM: 87dab3211afc11db85221b77ad3631d9790c7d55
 
 COCOAPODS: 1.14.3

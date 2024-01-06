@@ -1,5 +1,5 @@
-import React, {memo, useCallback, useEffect, useRef, useState} from 'react';
-import {FlatList, Text, View, TouchableOpacity, TextInput, StyleSheet} from 'react-native-macos';
+import React, {memo, useCallback, useEffect, useMemo, useRef, useState} from 'react';
+import {FlatList, Text, View, TextInput, StyleSheet} from 'react-native-macos';
 import {getToken} from './utils';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {MyClipboardModule as Clipboard, eventEmitter, open_file} from './module';
@@ -9,6 +9,7 @@ import {DataInterface, OtpItemInterface} from './types';
 import {ToastProvider, useToast} from 'react-native-toast-notifications';
 import {compressToUTF16, decompressFromUTF16} from 'lz-string';
 import RNFS from 'react-native-fs';
+import {GestureHandlerRootView, GestureDetector, Gesture} from 'react-native-gesture-handler';
 
 const styles = StyleSheet.create({
   itemContainer: {
@@ -45,15 +46,19 @@ const ListItem = memo(({x}: {x: OtpItemInterface}) => {
     toast.show(result);
   }, [otp, toast]);
 
+  const tap = useMemo(() => Gesture.Tap().maxDuration(250).onStart(onPress), [onPress]);
+
   return (
-    <TouchableOpacity activeOpacity={0.5} style={styles.itemContainer} onPress={onPress}>
-      <View>
-        <Text style={{fontSize: 18}}>{x.name}</Text>
-        <Text style={{fontSize: 32}}>{otp}</Text>
-        <Text style={{fontSize: 18}}>{x.otp.account}</Text>
+    <GestureDetector gesture={tap}>
+      <View style={styles.itemContainer}>
+        <View>
+          <Text style={{fontSize: 18}}>{x.name}</Text>
+          <Text style={{fontSize: 32}}>{otp}</Text>
+          <Text style={{fontSize: 18}}>{x.otp.account}</Text>
+        </View>
+        <ProgressCircleComponent onFinishStep={onFinishStep} />
       </View>
-      <ProgressCircleComponent onFinishStep={onFinishStep} />
-    </TouchableOpacity>
+    </GestureDetector>
   );
 });
 
@@ -111,21 +116,22 @@ const App = () => {
   );
 
   return (
-    <ToastProvider>
-      <View style={{flex: 1, backgroundColor: Colors.lighter}}>
-        <TextInput autoFocus style={styles.input} onChangeText={onChangeText} />
-        <FlatList
-          contentInsetAdjustmentBehavior="automatic"
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scroll}
-          keyExtractor={item => item.name + item.otp.account}
-          data={items}
-          renderItem={({item}) => {
-            return <ListItem x={item} />;
-          }}
-        />
-      </View>
-    </ToastProvider>
+    <GestureHandlerRootView style={{flex: 1}}>
+      <ToastProvider>
+        <View style={{flex: 1, backgroundColor: Colors.lighter}}>
+          <TextInput autoFocus style={styles.input} onChangeText={onChangeText} />
+          <FlatList
+            contentInsetAdjustmentBehavior="automatic"
+            contentContainerStyle={styles.scroll}
+            keyExtractor={item => item.name + item.otp.account}
+            data={items}
+            renderItem={({item}) => {
+              return <ListItem x={item} />;
+            }}
+          />
+        </View>
+      </ToastProvider>
+    </GestureHandlerRootView>
   );
 };
 
