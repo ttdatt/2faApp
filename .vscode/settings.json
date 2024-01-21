@@ -13,7 +13,10 @@
   "[json]": {
     "editor.defaultFormatter": "biomejs.biome"
   },
-  "biome.lspBin": "./frontend/node_modules/@biomejs/cli-darwin-arm64/biome",
+  "biome.lspBin": "./node_modules/@biomejs/cli-darwin-arm64/biome",
+  "[rust]": {
+    "editor.defaultFormatter": "rust-lang.rust-analyzer"
+  },
   "[go]": {
     "editor.defaultFormatter": "golang.go"
   }
