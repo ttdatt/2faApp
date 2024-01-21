@@ -98,10 +98,6 @@ function App() {
 
 	invoke("write_log", { message: "render" });
 
-	if (items.length === 0) return null;
-
-	invoke("write_log", { message: "render with result" });
-
 	return (
 		<div className="flex flex-col pt-4 px-4">
 			<Input
