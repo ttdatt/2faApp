@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { CopyToClipboard, ImportFile, LoadFile } from "../wailsjs/go/main/App";
+import {
+	CopyToClipboard,
+	ImportFile,
+	LoadFile,
+	WriteLog,
+} from "../wailsjs/go/main/App";
 import CountdownCircle from "./CountdownCircle";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -43,6 +48,17 @@ function App() {
 	const inputFile = useRef<HTMLInputElement | null>(null);
 
 	useEffect(() => {
+		(async () => {
+			WriteLog("load file");
+			const content = await LoadFile();
+			const data = JSON.parse(decompressFromUTF16(content));
+			originData.current = data;
+			setItems(data.services);
+			WriteLog("load file end");
+		})();
+	}, []);
+
+	useEffect(() => {
 		window.runtime.EventsOn("open-file", (data: any) => {
 			console.log(data);
 			inputFile.current?.click();
@@ -51,15 +67,6 @@ function App() {
 		return () => {
 			window.runtime.EventsOff("open-file");
 		};
-	}, []);
-
-	useEffect(() => {
-		(async () => {
-			const content = await LoadFile();
-			const data = JSON.parse(decompressFromUTF16(content));
-			originData.current = data;
-			setItems(data.services);
-		})();
 	}, []);
 
 	const onOpenFile = useCallback(
@@ -103,6 +110,12 @@ function App() {
 		}, 300),
 		[],
 	);
+
+	WriteLog("render");
+
+	if (items.length === 0) return null;
+
+	WriteLog("render with result");
 
 	return (
 		<div className="flex flex-col pt-4 px-4">

@@ -7,6 +7,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"time"
 )
 
 // App struct
@@ -23,6 +24,7 @@ func NewApp() *App {
 // so we can call the runtime methods
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	a.WriteLog("Startup")
 }
 
 func (a *App) CopyToClipboard(text string) bool {
@@ -96,4 +98,35 @@ func (a *App) LoadFile() string {
 		log.Println("Error reading file: ", err)
 	}
 	return string(data)
+}
+
+func (a *App) WriteLog(str string) {
+	defer func() {
+		if r := recover(); r != nil {
+			errString := fmt.Sprintf("%v", r)
+			log.Println("Recovered from error:", errString)
+		}
+	}()
+
+	execPath, err := os.Executable()
+	if err != nil {
+		log.Println("Error getting executable path:", err)
+		return
+	}
+	execDir := filepath.Dir(execPath)
+	fullPath := filepath.Join(execDir, "log.txt")
+
+	file, err := os.OpenFile(fullPath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Println("Error opening file:", err)
+		return
+	}
+	defer file.Close()
+
+	// Consider appending a newline or timestamp
+	logEntry := fmt.Sprintf("%s: %s\n", time.Now().Format("2006-01-02 15:04:05.000"), str)
+
+	if _, err := file.WriteString(logEntry); err != nil {
+		log.Println("Error writing to file:", err)
+	}
 }

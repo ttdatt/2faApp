@@ -6,3 +6,5 @@ export function CopyToClipboard(arg1:string):Promise<boolean>;
 export function ImportFile(arg1:string):Promise<string>;
 
 export function LoadFile():Promise<string>;
+
+export function WriteLog(arg1:string):Promise<void>;

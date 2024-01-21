@@ -17,6 +17,7 @@ var assets embed.FS
 func main() {
 	// Create an instance of the app structure
 	app := NewApp()
+	app.WriteLog("Init App")
 
 	RootMenu := menu.NewMenu()
 	AppMenu := RootMenu.AddSubmenu("App")
@@ -34,6 +35,8 @@ func main() {
 		runtime.Quit(app.ctx)
 	})
 
+	app.WriteLog("Starting")
+
 	// Create application with options
 	err := wails.Run(&options.App{
 		Title:  "Authenticator",
@@ -43,12 +46,14 @@ func main() {
 		AssetServer: &assetserver.Options{
 			Assets: assets,
 		},
-		BackgroundColour: &options.RGBA{R: 27, G: 38, B: 54, A: 1},
-		OnStartup:        app.startup,
+		OnStartup: app.startup,
 		Bind: []interface{}{
 			app,
 		},
 	})
+
+	app.WriteLog("Running")
+	app.WriteLog("====================")
 
 	if err != nil {
 		println("Error:", err.Error())

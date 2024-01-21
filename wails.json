@@ -2,9 +2,9 @@
 	"$schema": "https://wails.io/schemas/config.v2.json",
 	"name": "Authenticator",
 	"outputfilename": "Authenticator",
-	"frontend:install": "bun install",
-	"frontend:build": "bun run build",
-	"frontend:dev:watcher": "bun run dev",
+	"frontend:install": "yarn",
+	"frontend:build": "yarn build",
+	"frontend:dev:watcher": "yarn dev",
 	"frontend:dev:serverUrl": "auto",
 	"author": {
 		"name": "dat.tran",

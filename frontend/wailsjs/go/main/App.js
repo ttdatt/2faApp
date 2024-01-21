@@ -13,3 +13,7 @@ export function ImportFile(arg1) {
 export function LoadFile() {
   return window['go']['main']['App']['LoadFile']();
 }
+
+export function WriteLog(arg1) {
+  return window['go']['main']['App']['WriteLog'](arg1);
+}
