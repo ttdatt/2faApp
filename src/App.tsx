@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 import type { DataInterface, OtpItemInterface } from "./types";
-import { getToken } from "./utils";
+import { getRemainingSeconds, getToken } from "./utils";
 import debounce from "lodash/debounce";
 import { compressToUTF16, decompressFromUTF16 } from "lz-string";
 import { invoke } from "@tauri-apps/api";
@@ -15,13 +15,21 @@ import { listen } from "@tauri-apps/api/event";
 import { open } from "@tauri-apps/api/dialog";
 import { writeText } from "@tauri-apps/api/clipboard";
 
-const ListItem = ({ x }: { x: OtpItemInterface }) => {
+const INTERVAL = 0.04;
+
+const ListItem = ({
+  x,
+  timeLeft,
+  trigger,
+}: { x: OtpItemInterface; timeLeft: number; trigger: number }) => {
   const { toast } = useToast();
   const [otp, setOtp] = useState<string>(getToken(x.secret));
 
-  const refreshOtp = useCallback(() => {
+  useEffect(() => {
+    if (trigger < 0) {
+    }
     setOtp(getToken(x.secret));
-  }, [x.secret]);
+  }, [trigger, x.secret]);
 
   return (
     <div
@@ -39,8 +47,46 @@ const ListItem = ({ x }: { x: OtpItemInterface }) => {
           {x.otp.account}
         </Label>
       </div>
-      <CountdownCircle onFinishStep={refreshOtp} />
+      <CountdownCircle timeLeft={timeLeft} />
     </div>
+  );
+};
+
+const List = ({ items }: { items: OtpItemInterface[] }) => {
+  const [trigger, setTrigger] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(getRemainingSeconds());
+  const flag = useRef(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      const t = getRemainingSeconds();
+
+      if (t >= 29 && !flag.current) {
+        flag.current = true;
+        setTrigger((x) => x + 1);
+      }
+      if (t < 2) {
+        flag.current = false;
+      }
+      setTimeLeft(t);
+    }, INTERVAL * 1000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <>
+      {items?.map((x) => {
+        return (
+          <ListItem
+            x={x}
+            key={x.name + x.otp.account}
+            timeLeft={timeLeft}
+            trigger={trigger}
+          />
+        );
+      })}
+    </>
   );
 };
 
@@ -52,7 +98,7 @@ function App() {
     (async () => {
       await invoke("write_log", { message: "load file" });
       const dir = await resourceDir();
-      const content = await readTextFile(`${dir}/output.bin`);
+      const content = await readTextFile(`${dir}output.bin`);
       const data = JSON.parse(decompressFromUTF16(content));
       originData.current = data;
       setItems(data.services);
@@ -110,10 +156,7 @@ function App() {
         className="mb-4"
         onChange={onChangeText}
       />
-
-      {items?.map((x) => {
-        return <ListItem x={x} key={x.name + x.otp.account} />;
-      })}
+      <List items={items} />
       <Toaster />
     </div>
   );

@@ -1,25 +1,9 @@
-import { useState, useEffect } from "react";
-import { TIME_FRAME, getRemainingSeconds } from "./utils";
+import { TIME_FRAME } from "./utils";
 
-const INTERVAL = 0.016; // 60fps
 const radius = 20;
 const circumference = 2 * Math.PI * radius;
 
-const CountdownCircle = ({ onFinishStep }: { onFinishStep: () => void }) => {
-  const [timeLeft, setTimeLeft] = useState<number>(getRemainingSeconds());
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime < 0) return prevTime - INTERVAL;
-        onFinishStep();
-        return getRemainingSeconds();
-      });
-    }, INTERVAL * 1000);
-
-    return () => clearInterval(timer);
-  }, [onFinishStep]);
-
+const CountdownCircle = ({ timeLeft }: { timeLeft: number }) => {
   const strokeDashoffset = circumference * (1 - timeLeft / TIME_FRAME);
 
   return (
