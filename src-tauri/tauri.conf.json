@@ -49,8 +49,8 @@
 		"windows": [
 			{
 				"fullscreen": false,
-				"resizable": true,
-				"title": "authenticator-tauri",
+				"resizable": false,
+				"title": "Authenticator",
 				"width": 480,
 				"height": 768
 			}

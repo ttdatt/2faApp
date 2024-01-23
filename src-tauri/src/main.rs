@@ -35,11 +35,6 @@ fn write_log(message: &str) {
     }
 }
 
-#[derive(Clone, serde::Serialize)]
-struct Payload {
-    message: String,
-}
-
 fn main() {
     let quit = CustomMenuItem::new("quit".to_string(), "Quit").accelerator("CmdOrControl+W");
     let import = CustomMenuItem::new("import".to_string(), "Import").accelerator("CmdOrControl+I");
@@ -55,12 +50,7 @@ fn main() {
                 std::process::exit(0);
             }
             "import" => {
-                let _ = event.window().emit_all(
-                    "open-dialog",
-                    Payload {
-                        message: "import".into(),
-                    },
-                );
+                let _ = event.window().emit_all("open-dialog", "");
             }
             _ => {}
         })
