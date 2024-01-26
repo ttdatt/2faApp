@@ -1,19 +1,6 @@
 {
   "editor.formatOnSave": true,
-  "editor.defaultFormatter": "biomejs.biome",
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[javascript]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "[json]": {
-    "editor.defaultFormatter": "biomejs.biome"
-  },
-  "biome.lspBin": "./node_modules/@biomejs/cli-darwin-arm64/biome",
+  "svelte.enable-ts-plugin": true,
   "[rust]": {
     "editor.defaultFormatter": "rust-lang.rust-analyzer"
   },
