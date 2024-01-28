@@ -8,7 +8,7 @@
   import { resourceDir } from '@tauri-apps/api/path';
   import { exists, readTextFile, writeTextFile } from '@tauri-apps/api/fs';
   import { invoke } from '@tauri-apps/api';
-  import { ciphertext, needPassword, originalData } from '../store';
+  import { ciphertext, isLoading, needPassword, originalData } from '../store';
   import { decrypt, encrypt } from '../utils/crypto';
   import type { ConfirmModalProps } from '../types/form';
   import { listen } from '@tauri-apps/api/event';
@@ -17,13 +17,17 @@
   import Login from '../lib/Login.svelte';
 
   const modalStore = getModalStore();
+  isLoading.set(true);
 
   onMount(() => {
     (async () => {
       await invoke('write_log', { message: 'load file' });
       const dir = await resourceDir();
       const fileExist = await exists(`${dir}output.bin`);
-      if (!fileExist) return;
+      if (!fileExist) {
+        isLoading.set(false);
+        return;
+      }
 
       const text = await readTextFile(`${dir}output.bin`);
       ciphertext.set(text);
@@ -32,11 +36,13 @@
 
       if (hasPass === 'true') {
         needPassword.set(true);
+        isLoading.set(false);
         return;
       } else needPassword.set(false);
 
       const data = JSON.parse(await decrypt(text));
       originalData.set(data);
+      isLoading.set(false);
       await invoke('write_log', { message: 'load file end' });
     })();
 
@@ -72,7 +78,7 @@
   });
 </script>
 
-{#if $needPassword === undefined}
+{#if $isLoading}
   <div class="flex flex-1 h-vh justify-center items-center">
     <ProgressRadial width="w-20" />
   </div>
