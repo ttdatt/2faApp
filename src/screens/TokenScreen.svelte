@@ -67,6 +67,7 @@
             const encryptedText = await encrypt(content, p);
             const dir = await resourceDir();
             await writeTextFile(`${dir}output.bin`, encryptedText);
+            needPassword.set(false);
           },
         };
         modalStore.trigger(modal);
