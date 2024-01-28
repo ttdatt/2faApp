@@ -25,6 +25,7 @@
       "fs": {
         "readFile": true,
         "writeFile": true,
+        "exists": true,
         "scope": [
           "$RESOURCE/*"
         ]

@@ -1,15 +1,11 @@
 <script lang="ts">
-  import {
-    getToastStore,
-    type ToastSettings,
-    type ToastStore,
-  } from '@skeletonlabs/skeleton';
+  import { getToastStore } from '@skeletonlabs/skeleton';
   const toastStore = getToastStore();
 
   import { writeText } from '@tauri-apps/api/clipboard';
-  import type { OtpItemInterface } from '../types';
-  import { getToken } from '../utils';
-  import { TIME_FRAME } from '../utils';
+  import type { OtpItemInterface } from '../types/TokenTypes';
+  import { getToken } from '../utils/token';
+  import { TIME_FRAME } from '../utils/token';
 
   export let trigger: number = 0;
   export let timeLeft: number = 0;
@@ -29,6 +25,7 @@
   class="flex items-center justify-between py-1 cursor-pointer pb-2"
   on:click={async () => {
     await writeText(otp);
+    toastStore.clear();
     toastStore.trigger({ message: otp, timeout: 1500 });
   }}
   role="button"

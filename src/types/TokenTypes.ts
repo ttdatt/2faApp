@@ -7,9 +7,6 @@ export interface Group {
 export interface DataInterface {
   groups: Group[];
   schemaVersion: number;
-  appOrigin: string;
-  appVersionCode: number;
-  appVersionName: string;
   services: OtpItemInterface[];
 }
 export interface OtpItemInterface {
@@ -23,6 +20,9 @@ export interface OtpItemInterface {
     iconCollection: {
       id: string;
     };
+  };
+  order: {
+    position: number;
   };
   otp: {
     source: string;

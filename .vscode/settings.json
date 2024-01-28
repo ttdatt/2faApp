@@ -6,5 +6,8 @@
   },
   "[go]": {
     "editor.defaultFormatter": "golang.go"
+  },
+  "[svelte]": {
+    "editor.defaultFormatter": "svelte.svelte-vscode"
   }
 }

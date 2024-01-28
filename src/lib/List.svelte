@@ -1,21 +1,18 @@
 <script lang="ts">
   import OtpItem from './OtpItem.svelte';
-  import { getRemainingSeconds } from '../utils';
-
-  import { listen } from '@tauri-apps/api/event';
-  import { readTextFile, writeTextFile } from '@tauri-apps/api/fs';
-  import { compressToUTF16, decompressFromUTF16 } from 'lz-string';
-  import { resourceDir } from '@tauri-apps/api/path';
-  import { open } from '@tauri-apps/api/dialog';
-  import type { DataInterface, OtpItemInterface } from '../types';
+  import { getRemainingSeconds } from '../utils/token';
+  import type { OtpItemInterface } from '../types/TokenTypes';
   import { onMount } from 'svelte';
   import { invoke } from '@tauri-apps/api';
   import debounce from 'lodash/debounce';
+  import { getModalStore } from '@skeletonlabs/skeleton';
+  import { originalData } from '../store';
+
+  const modalStore = getModalStore();
 
   invoke('write_log', { message: 'render' });
 
   let items: OtpItemInterface[] = [];
-  let originData: DataInterface;
 
   const INTERVAL = 0.04;
   let timeLeft: number = getRemainingSeconds();
@@ -23,48 +20,27 @@
   let flag = false;
   let inputRef: HTMLInputElement;
 
+  originalData.subscribe(d => {
+    if (!d) return;
+    items = d.services;
+  });
+
   const debounceFilter = debounce(e => {
     const text = e.target.value;
 
-    if (!originData) return;
+    if (!$originalData) return;
 
     if (text?.length > 0) {
-      items = originData?.services?.filter(
+      items = $originalData?.services?.filter(
         y =>
           y.name.toLowerCase().includes(text.toLowerCase()) ||
-          y.otp.account?.toLowerCase().includes(text.toLowerCase()),
+          y.otp.account?.toLowerCase().includes(text.toLowerCase())
       );
-    } else items = originData.services;
+    } else items = $originalData.services;
   }, 300);
 
   onMount(() => {
     inputRef.focus();
-    (async () => {
-      await invoke('write_log', { message: 'load file' });
-      const dir = await resourceDir();
-      const content = await readTextFile(`${dir}output.bin`);
-      const data = JSON.parse(decompressFromUTF16(content));
-      originData = data;
-      items = data.services;
-      await invoke('write_log', { message: 'load file end' });
-    })();
-
-    const unlisten = listen('open-dialog', async () => {
-      const selected = await open();
-      if (selected) {
-        const content = await readTextFile(selected as string);
-        const data = JSON.parse(content);
-        items = data.services;
-        originData = data;
-
-        const compressText = compressToUTF16(content);
-        const dir = await resourceDir();
-        await writeTextFile(`${dir}output.bin`, compressText);
-      }
-    });
-    return () => {
-      unlisten?.then(f => f());
-    };
   });
 
   setInterval(() => {
