@@ -22,7 +22,7 @@ const TIME_FRAME = 30;
 
 const getRemainingSeconds = () => {
   'worklet';
-  return TIME_FRAME - ((new Date().getTime() / 1000) % TIME_FRAME) + 1;
+  return TIME_FRAME - ((new Date().getTime() / 1000) % TIME_FRAME);
 };
 
 export const ProgressCircleComponent = memo(({onFinishStep}: {onFinishStep: () => void}) => {
@@ -48,7 +48,7 @@ export const ProgressCircleComponent = memo(({onFinishStep}: {onFinishStep: () =
   });
 
   const text = useDerivedValue(() => {
-    return Math.floor(timer.value).toString();
+    return Math.ceil(timer.value).toString();
   });
 
   return (
