@@ -17,10 +17,10 @@
     "lodash": "^4.17.21",
     "lz-string": "^1.5.0",
     "react": "18.2.0",
-    "react-native": "0.73.4",
+    "react-native": "0.73.6",
     "react-native-fs": "^2.20.0",
     "react-native-gesture-handler": "2.15.0",
-    "react-native-macos": "0.73.14",
+    "react-native-macos": "0.73.23",
     "react-native-reanimated": "3.6.1",
     "react-native-svg": "^13.9.0",
     "react-native-toast-notifications": "^3.4.0"
