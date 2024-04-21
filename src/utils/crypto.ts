@@ -1,7 +1,7 @@
-const pass = 'default-password';
+const pass = "default-password";
 
 function arrayBufferToBinaryString(buffer: ArrayBuffer) {
-  let binary = '';
+  let binary = "";
   const bytes = new Uint8Array(buffer);
   for (let byte of bytes) {
     binary += String.fromCharCode(byte);
@@ -28,23 +28,23 @@ function base64ToArrayBuffer(base64: string) {
 
 async function generateKey(password: string, salt: ArrayBuffer) {
   const baseKey = await window.crypto.subtle.importKey(
-    'raw',
+    "raw",
     new TextEncoder().encode(password),
-    'PBKDF2',
+    "PBKDF2",
     false,
-    ['deriveBits', 'deriveKey']
+    ["deriveBits", "deriveKey"],
   );
   const key = await window.crypto.subtle.deriveKey(
     {
-      name: 'PBKDF2',
-      hash: 'SHA-256',
+      name: "PBKDF2",
+      hash: "SHA-256",
       salt,
       iterations: 100000,
     },
     baseKey,
-    { name: 'AES-GCM', length: 256 },
+    { name: "AES-GCM", length: 256 },
     false,
-    ['encrypt', 'decrypt']
+    ["encrypt", "decrypt"],
   );
   return key;
 }
@@ -55,9 +55,9 @@ export async function encrypt(plaintext: string, password: string = pass) {
 
   const key = await generateKey(password, salt);
   const encodedData = await window.crypto.subtle.encrypt(
-    { name: 'AES-GCM', iv },
+    { name: "AES-GCM", iv },
     key,
-    new TextEncoder().encode(plaintext)
+    new TextEncoder().encode(plaintext),
   );
   const encodedBase64Data = arrayBufferToBase64(encodedData);
   const base64Salt = arrayBufferToBase64(salt);
@@ -71,7 +71,7 @@ export async function encrypt(plaintext: string, password: string = pass) {
 
 export async function decrypt(ciphertext: string, password: string = pass) {
   const [hasPass, encodedBase64Data, base64Salt, base64Iv] =
-    ciphertext.split(';');
+    ciphertext.split(";");
   console.log(hasPass);
 
   const salt = base64ToArrayBuffer(base64Salt);
@@ -79,9 +79,9 @@ export async function decrypt(ciphertext: string, password: string = pass) {
   const encodedData = base64ToArrayBuffer(encodedBase64Data);
   const key = await generateKey(password, salt);
   const decryptedData = await window.crypto.subtle.decrypt(
-    { name: 'AES-GCM', iv },
+    { name: "AES-GCM", iv },
     key,
-    encodedData
+    encodedData,
   );
   return arrayBufferToBinaryString(decryptedData);
 }

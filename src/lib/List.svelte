@@ -1,16 +1,16 @@
 <script lang="ts">
-  import OtpItem from './OtpItem.svelte';
-  import { getRemainingSeconds } from '../utils/token';
-  import type { OtpItemInterface } from '../types/TokenTypes';
-  import { onMount } from 'svelte';
-  import { invoke } from '@tauri-apps/api';
-  import debounce from 'lodash/debounce';
-  import { getModalStore } from '@skeletonlabs/skeleton';
-  import { originalData } from '../store';
+  import OtpItem from "./OtpItem.svelte";
+  import { getRemainingSeconds } from "../utils/token";
+  import type { OtpItemInterface } from "../types/TokenTypes";
+  import { onMount } from "svelte";
+  import { invoke } from "@tauri-apps/api";
+  import debounce from "lodash/debounce";
+  import { getModalStore } from "@skeletonlabs/skeleton";
+  import { originalData } from "../store";
 
   const modalStore = getModalStore();
 
-  invoke('write_log', { message: 'render' });
+  invoke("write_log", { message: "render" });
 
   let items: OtpItemInterface[] = [];
 
@@ -20,21 +20,21 @@
   let flag = false;
   let inputRef: HTMLInputElement;
 
-  originalData.subscribe(d => {
+  originalData.subscribe((d) => {
     if (!d) return;
     items = d.services;
   });
 
-  const debounceFilter = debounce(e => {
+  const debounceFilter = debounce((e) => {
     const text = e.target.value;
 
     if (!$originalData) return;
 
     if (text?.length > 0) {
       items = $originalData?.services?.filter(
-        y =>
+        (y) =>
           y.name.toLowerCase().includes(text.toLowerCase()) ||
-          y.otp.account?.toLowerCase().includes(text.toLowerCase())
+          y.otp.account?.toLowerCase().includes(text.toLowerCase()),
       );
     } else items = $originalData.services;
   }, 300);

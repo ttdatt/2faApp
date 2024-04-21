@@ -1,28 +1,28 @@
 <script lang="ts">
-  import { getToastStore } from '@skeletonlabs/skeleton';
+  import { getToastStore } from "@skeletonlabs/skeleton";
   const toastStore = getToastStore();
 
-  import { writeText } from '@tauri-apps/api/clipboard';
-  import type { OtpItemInterface } from '../types/TokenTypes';
-  import { getToken } from '../utils/token';
-  import { TIME_FRAME } from '../utils/token';
+  import { writeText } from "@tauri-apps/api/clipboard";
+  import type { OtpItemInterface } from "../types/TokenTypes";
+  import { getToken } from "../utils/token";
+  import { TIME_FRAME } from "../utils/token";
 
   export let trigger: number = 0;
   export let timeLeft: number = 0;
   export let item: OtpItemInterface | null = null;
 
-  let otp = !!item ? getToken(item.secret) : '';
+  let otp = !!item ? getToken(item.secret) : "";
 
   const radius = 20;
   const circumference = 2 * Math.PI * radius;
   let strokeDashoffset = 0;
 
-  $: otp = !!item && trigger >= 0 ? getToken(item.secret) : '';
+  $: otp = !!item && trigger >= 0 ? getToken(item.secret) : "";
   $: strokeDashoffset = circumference * (1 - timeLeft / TIME_FRAME);
 </script>
 
 <div
-  class="flex items-center justify-between py-1 cursor-pointer pb-2"
+  class="flex flex-row w-full items-center justify-between py-1 cursor-pointer pb-2"
   on:click={async () => {
     await writeText(otp);
     toastStore.clear();
@@ -32,14 +32,18 @@
   tabindex="0"
   on:keydown={undefined}
 >
-  <div class="flex flex-col cursor-pointer items-start">
+  <div class="flex flex-col w-full overflow-hidden">
     {#if item}
-      <p class="text-xl font-medium cursor-pointer">{item.name}</p>
-      <p class="text-3xl font-medium cursor-pointer">
+      <p class="text-xl font-medium cursor-pointer">
+        {item.name}
+      </p>
+      <p class="text-3xl font-medium ncursor-pointer">
         {otp}
       </p>
-      <p class="text-xl font-medium h-7 cursor-pointer">
-        {item.otp.account ?? ''}
+      <p
+        class="text-xl text-ellipsis overflow-hidden font-medium h-7 cursor-pointer"
+      >
+        {item.otp.account ?? ""}
       </p>
     {:else}
       <p class="text-xl font-medium cursor-pointer">No item</p>

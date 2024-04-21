@@ -1,4 +1,4 @@
-import { authenticator } from '@otplib/preset-browser';
+import { authenticator } from "./otplib";
 
 export const TIME_FRAME = 30;
 

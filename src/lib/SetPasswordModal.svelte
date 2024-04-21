@@ -1,8 +1,8 @@
 <script lang="ts">
-  import type { SvelteComponent } from 'svelte';
+  import type { SvelteComponent } from "svelte";
 
   // Stores
-  import { getModalStore } from '@skeletonlabs/skeleton';
+  import { getModalStore } from "@skeletonlabs/skeleton";
 
   // Props
   /** Exposes parent props to this component. */
@@ -12,8 +12,8 @@
 
   // Form Data
   const formData = {
-    password: '',
-    confirmPassword: '',
+    password: "",
+    confirmPassword: "",
   };
 
   // We've created a custom submit function to pass the response and close the modal.
@@ -27,15 +27,15 @@
   }
 
   // Base Classes
-  const cBase = 'card p-4 w-modal shadow-xl space-y-4';
-  const cHeader = 'text-2xl font-bold';
+  const cBase = "card p-4 w-modal shadow-xl space-y-4";
+  const cHeader = "text-2xl font-bold";
   const cForm =
-    'border border-surface-500 p-4 space-y-4 rounded-container-token';
+    "border border-surface-500 p-4 space-y-4 rounded-container-token";
 </script>
 
 {#if $modalStore[0]}
   <div class="modal-example-form {cBase}">
-    <header class={cHeader}>{$modalStore[0].title ?? '(title missing)'}</header>
+    <header class={cHeader}>{$modalStore[0].title ?? "(title missing)"}</header>
     {#if $modalStore[0].body}
       <article>{$modalStore[0].body}</article>
     {/if}
@@ -57,7 +57,7 @@
           placeholder="Confirm password"
         />
       </label>
-      {#if formData.confirmPassword !== '' && formData.password !== formData.confirmPassword}
+      {#if formData.confirmPassword !== "" && formData.password !== formData.confirmPassword}
         <p class=" text-sm font-semibold text-red-500">
           confirm password doesn't match
         </p>

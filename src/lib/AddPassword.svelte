@@ -1,7 +1,7 @@
 <script lang="ts">
   export let onFinish: () => void;
   let inputRef: HTMLInputElement;
-  let password = '';
+  let password = "";
 
   function handleSubmitPassword(e: SubmitEvent) {
     console.log(password);

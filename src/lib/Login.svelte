@@ -1,9 +1,9 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
-  import { decrypt } from '../utils/crypto';
-  import { ciphertext, needPassword, originalData } from '../store';
+  import { onMount } from "svelte";
+  import { decrypt } from "../utils/crypto";
+  import { ciphertext, needPassword, originalData } from "../store";
 
-  let password = '';
+  let password = "";
   let inputRef: HTMLInputElement;
 
   onMount(() => {
