@@ -1,4 +1,7 @@
 <script lang="ts">
+  import { invoke } from "@tauri-apps/api/core";
+  invoke("write_log", { message: "web app start" });
+
   import {
     initializeStores,
     Modal,
