@@ -3,7 +3,7 @@
   import { getRemainingSeconds } from "../utils/token";
   import type { OtpItemInterface } from "../types/TokenTypes";
   import { onMount } from "svelte";
-  import { invoke } from "@tauri-apps/api";
+  import { invoke } from "@tauri-apps/api/core";
   import debounce from "lodash/debounce";
   import { getModalStore } from "@skeletonlabs/skeleton";
   import { originalData } from "../store";

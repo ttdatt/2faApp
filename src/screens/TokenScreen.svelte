@@ -5,14 +5,18 @@
     ProgressRadial,
   } from "@skeletonlabs/skeleton";
   import { onMount } from "svelte";
-  import { resourceDir } from "@tauri-apps/api/path";
-  import { exists, readTextFile, writeTextFile } from "@tauri-apps/api/fs";
-  import { invoke } from "@tauri-apps/api";
+  import {
+    BaseDirectory,
+    exists,
+    readTextFile,
+    writeTextFile,
+  } from "@tauri-apps/plugin-fs";
+  import { invoke } from "@tauri-apps/api/core";
   import { ciphertext, isLoading, needPassword, originalData } from "../store";
   import { decrypt, encrypt } from "../utils/crypto";
   import type { ConfirmModalProps } from "../types/form";
   import { listen } from "@tauri-apps/api/event";
-  import { open } from "@tauri-apps/api/dialog";
+  import { open } from "@tauri-apps/plugin-dialog";
   import List from "../lib/List.svelte";
   import Login from "../lib/Login.svelte";
 
@@ -22,14 +26,17 @@
   onMount(() => {
     (async () => {
       await invoke("write_log", { message: "load file" });
-      const dir = await resourceDir();
-      const fileExist = await exists(`${dir}output.bin`);
+      const fileExist = await exists(`output.bin`, {
+        baseDir: BaseDirectory.Resource,
+      });
       if (!fileExist) {
         isLoading.set(false);
         return;
       }
 
-      const text = await readTextFile(`${dir}output.bin`);
+      const text = await readTextFile(`output.bin`, {
+        baseDir: BaseDirectory.Resource,
+      });
       ciphertext.set(text);
       const [hasPass] = text.split(";");
       console.log("hasPass", hasPass);
@@ -47,6 +54,8 @@
     })();
 
     const unlisten = listen("open-dialog", async () => {
+      console.log("open-dialog");
+
       const selected = await open();
       if (selected) {
         const modal: ModalSettings = {
@@ -60,13 +69,14 @@
             let p = undefined;
             if (!(typeof r === "boolean")) p = r.password;
 
-            const content = await readTextFile(selected as string);
+            const content = await readTextFile(selected.path);
             const data = JSON.parse(content);
             originalData.set(data);
 
             const encryptedText = await encrypt(content, p);
-            const dir = await resourceDir();
-            await writeTextFile(`${dir}output.bin`, encryptedText);
+            await writeTextFile("output.bin", encryptedText, {
+              baseDir: BaseDirectory.Resource,
+            });
             needPassword.set(false);
           },
         };

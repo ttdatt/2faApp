@@ -2,7 +2,7 @@
   import { getToastStore } from "@skeletonlabs/skeleton";
   const toastStore = getToastStore();
 
-  import { writeText } from "@tauri-apps/api/clipboard";
+  import { writeText } from "@tauri-apps/plugin-clipboard-manager";
   import type { OtpItemInterface } from "../types/TokenTypes";
   import { getToken } from "../utils/token";
   import { TIME_FRAME } from "../utils/token";

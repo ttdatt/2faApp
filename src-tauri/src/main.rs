@@ -4,7 +4,10 @@
 use chrono::Local;
 use std::fs::OpenOptions;
 use std::io::Write;
-use tauri::{CustomMenuItem, Manager, Menu, Submenu};
+use tauri::{
+    menu::{MenuBuilder, MenuItemBuilder, SubmenuBuilder},
+    Manager,
+};
 
 fn try_write_log(
     message: &str,
@@ -36,24 +39,40 @@ fn write_log(message: &str) {
 }
 
 fn main() {
-    let quit = CustomMenuItem::new("quit".to_string(), "Quit").accelerator("CmdOrControl+W");
-    let import = CustomMenuItem::new("import".to_string(), "Import").accelerator("CmdOrControl+I");
-    let submenu = Submenu::new("File", Menu::new().add_item(import).add_item(quit));
-    let menu = Menu::new().add_submenu(submenu);
-
     write_log("----------------------------------------");
     write_log("application started");
     tauri::Builder::default()
-        .menu(menu)
-        .on_menu_event(|event| match event.menu_item_id() {
-            "quit" => {
-                std::process::exit(0);
-            }
-            "import" => {
-                let _ = event.window().emit_all("open-dialog", "");
-            }
-            _ => {}
+        .setup(|app| {
+            let quit = MenuItemBuilder::new("Quit")
+                .id("quit")
+                .accelerator("CmdOrControl+W");
+            let import = MenuItemBuilder::new("Import")
+                .id("import")
+                .accelerator("CmdOrControl+I");
+            let submenu = SubmenuBuilder::new(app, "App").build()?;
+            submenu.append(&import.build(app)?)?;
+            submenu.append(&quit.build(app)?)?;
+            let menu = MenuBuilder::new(app)
+                .text("file", "File")
+                .item(&submenu)
+                .build()?;
+            let _ = app.set_menu(menu);
+            app.on_menu_event(move |app, event| {
+                if event.id() == "quit" {
+                    app.exit(0);
+                } else if event.id() == "import" {
+                    println!("import triggered!");
+                    if let Err(e) = app.emit("open-dialog", "") {
+                        eprintln!("Failed to emit event: {:?}", e);
+                    }
+                }
+            });
+            Ok(())
         })
+        .plugin(tauri_plugin_clipboard_manager::init())
+        .plugin(tauri_plugin_fs::init())
+        .plugin(tauri_plugin_dialog::init())
+        .plugin(tauri_plugin_shell::init())
         .invoke_handler(tauri::generate_handler![write_log])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
