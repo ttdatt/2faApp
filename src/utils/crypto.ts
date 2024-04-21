@@ -64,7 +64,6 @@ export async function encrypt(plaintext: string, password: string = pass) {
   const base64Iv = arrayBufferToBase64(iv);
 
   const hasPass = password !== pass;
-  console.log(hasPass);
 
   return `${hasPass.toString()};${encodedBase64Data};${base64Salt};${base64Iv}`;
 }

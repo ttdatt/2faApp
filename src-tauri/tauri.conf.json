@@ -1,5 +1,5 @@
 {
-  "productName": "authenticator",
+  "productName": "Authenticator",
   "version": "0.0.0",
   "identifier": "com.dat.authenticator",
   "build": {
@@ -10,7 +10,7 @@
   },
   "app": {"windows": [
       {
-        "title": "authenticator",
+        "title": "Authenticator",
         "width": 480,
         "height": 768
       }

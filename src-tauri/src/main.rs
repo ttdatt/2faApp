@@ -1,8 +1,8 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use chrono::Local;
-use std::fs::OpenOptions;
+use chrono::{DateTime, Local};
+use std::fs::{metadata, OpenOptions};
 use std::io::Write;
 use tauri::{
     menu::{MenuBuilder, MenuItemBuilder, SubmenuBuilder},
@@ -18,8 +18,23 @@ fn try_write_log(
     let exec_dir = exec_path.parent().ok_or("No parent directory")?;
     let log_path = exec_dir.join(filename);
 
+    let should_append = if log_path.exists() {
+        let file_meta = metadata(&log_path)?;
+        let last_modified: DateTime<Local> = file_meta.modified()?.into();
+        let now: DateTime<Local> = Local::now();
+
+        let duration = now.signed_duration_since(last_modified);
+        let day_difference = duration.num_days().abs();
+
+        day_difference < 1
+    } else {
+        false
+    };
+
+    let final_append = append && should_append;
+
     let mut file = OpenOptions::new()
-        .append(append)
+        .append(final_append)
         .create(true)
         .write(true)
         .open(log_path)?;

@@ -39,7 +39,6 @@
       });
       ciphertext.set(text);
       const [hasPass] = text.split(";");
-      console.log("hasPass", hasPass);
 
       if (hasPass === "true") {
         needPassword.set(true);
@@ -64,8 +63,6 @@
           buttonTextCancel: "Skip",
           title: "Set Password",
           response: async (r: ConfirmModalProps | boolean) => {
-            console.log(r);
-
             let p = undefined;
             if (!(typeof r === "boolean")) p = r.password;
 
