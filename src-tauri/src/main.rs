@@ -2,7 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 use chrono::{DateTime, Local};
-use std::fs::{metadata, OpenOptions};
+use std::fs::{self, metadata, OpenOptions};
 use std::io::Write;
 use tauri::{
     menu::{MenuBuilder, MenuItemBuilder, SubmenuBuilder},
@@ -12,35 +12,39 @@ use tauri::{
 fn try_write_log(
     message: &str,
     filename: &str,
-    append: bool,
+    should_append: bool,
 ) -> Result<(), Box<dyn std::error::Error>> {
     let exec_path = std::env::current_exe()?;
     let exec_dir = exec_path.parent().ok_or("No parent directory")?;
     let log_path = exec_dir.join(filename);
 
-    let should_append = if log_path.exists() {
+    let file_still_fresh = if log_path.exists() {
         let file_meta = metadata(&log_path)?;
-        let last_modified: DateTime<Local> = file_meta.modified()?.into();
+
+        let created_at: DateTime<Local> = file_meta.created()?.into();
         let now: DateTime<Local> = Local::now();
 
-        let duration = now.signed_duration_since(last_modified);
+        let duration = now.signed_duration_since(created_at);
         let day_difference = duration.num_days().abs();
 
-        day_difference < 1
+        day_difference <= 1
     } else {
         false
     };
 
-    let final_append = append && should_append;
+    let append = should_append && file_still_fresh;
 
+    if !append {
+        fs::remove_file(&log_path).ok();
+    }
     let mut file = OpenOptions::new()
-        .append(final_append)
+        .append(true)
         .create(true)
         .write(true)
         .open(log_path)?;
 
     let timestamp = Local::now().format("%Y-%m-%d %H:%M:%S%.3f");
-    let log_entry = format!("{}: {}\n", timestamp, message);
+    let log_entry = format!("{}: {}\n", timestamp, message,);
 
     file.write_all(log_entry.as_bytes())?;
     Ok(())
