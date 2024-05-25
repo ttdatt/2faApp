@@ -22,9 +22,7 @@ import {
 } from "@otplib/core";
 import { Buffer } from "buffer";
 
-// @ts-ignore
 if (typeof window === "object" && typeof window.Buffer === "undefined") {
-  // @ts-ignore
   window.Buffer = Buffer; /* globals buffer */
 }
 
