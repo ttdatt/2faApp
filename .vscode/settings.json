@@ -1,12 +1,7 @@
 {
   "editor.formatOnSave": true,
-  "eslint.enable": true,
-  "eslint.format.enable": true,
-  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
-  "[typescriptreact]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+  "search.exclude": {
+    "**/node_modules": false
   },
-  "[typescript]": {
-    "editor.defaultFormatter": "dbaeumer.vscode-eslint"
-  }
+  "search.useIgnoreFiles": false
 }

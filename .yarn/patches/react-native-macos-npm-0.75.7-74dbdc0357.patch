@@ -1,0 +1,21 @@
+diff --git a/Libraries/AppDelegate/RCTAppDelegate.mm b/Libraries/AppDelegate/RCTAppDelegate.mm
+index bb89a606e06d297cd37df65ebd54690fa2c48726..404152451e46324b710b7c78f53ee8a53b3ebffa 100644
+--- a/Libraries/AppDelegate/RCTAppDelegate.mm
++++ b/Libraries/AppDelegate/RCTAppDelegate.mm
+@@ -76,14 +76,14 @@
+ 
+   return YES;
+ #else // [macOS
+-  NSRect frame = NSMakeRect(0,0,1280,720);
++  NSRect frame = NSMakeRect(0,0,480,768);
+   self.window = [[NSWindow alloc] initWithContentRect:NSZeroRect
+ 											styleMask:NSWindowStyleMaskTitled | NSWindowStyleMaskResizable | NSWindowStyleMaskClosable | NSWindowStyleMaskMiniaturizable
+ 											  backing:NSBackingStoreBuffered
+ 												defer:NO];
+   self.window.title = self.moduleName;
+   self.window.autorecalculatesKeyViewLoop = YES;
+-  NSViewController *rootViewController = [NSViewController new];
++  NSViewController *rootViewController = [self createRootViewController];
+   rootViewController.view = rootView;
+   rootView.frame = frame;
+   self.window.contentViewController = rootViewController;

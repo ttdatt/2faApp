@@ -1,27 +1,24 @@
 require_relative '../node_modules/react-native-macos/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-platform :macos, '10.15'
 prepare_react_native_project!
 
-target 'AuthApp-macOS' do
-  config = use_native_modules!
+target 'authenticator-macOS' do
+  platform :macos, '11.0'
+  use_native_modules!
+
+  # Flags change depending on the env values.
+  flags = get_default_flags()
 
   use_react_native!(
     :path => '../node_modules/react-native-macos',
-    :hermes_enabled => true,
+    :hermes_enabled => false,
     :fabric_enabled => ENV['RCT_NEW_ARCH_ENABLED'] == '1',
-    :flipper_configuration => FlipperConfiguration.disabled,
     # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
 
   post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
-    react_native_post_install(
-      installer,
-      config[:reactNativePath],
-      :mac_catalyst_enabled => false
-    )
+    react_native_post_install(installer)
   end
 end
