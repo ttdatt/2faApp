@@ -1,4 +1,4 @@
-const pass = 'A&vgX!^%8@R$U4!';
+const pass = import.meta.env.VITE_PASSWORD;
 
 function arrayBufferToBinaryString(buffer: ArrayBuffer) {
 	let binary = '';
