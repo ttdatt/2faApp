@@ -75,7 +75,6 @@ pub fn run() {
                 if event.id() == "quit" {
                     app.exit(0);
                 } else if event.id() == "import" {
-                    println!("import triggered!");
                     if let Err(e) = app.emit("open-dialog", "") {
                         eprintln!("Failed to emit event: {:?}", e);
                     }

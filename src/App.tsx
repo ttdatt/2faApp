@@ -4,17 +4,17 @@ import { invoke } from '@tauri-apps/api/core';
 import { Input } from '@/components/ui/input';
 import { DataInterface, OtpItemInterface } from './types';
 import { debounce } from 'lodash';
-import { resourceDir } from '@tauri-apps/api/path';
+import { BaseDirectory } from '@tauri-apps/api/path';
 import { readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
 import { open } from '@tauri-apps/plugin-dialog';
 import { listen } from '@tauri-apps/api/event';
-import { compressToUTF16, decompressFromUTF16 } from 'lz-string';
 import { useToast } from '@/hooks/use-toast';
 import { getRemainingSeconds, getToken } from './utils/token';
 import { writeText } from '@tauri-apps/plugin-clipboard-manager';
 import { Label } from './components/ui/label';
 import CountdownCircle from './CountdownCircle';
 import { Toaster } from './components/ui/toaster';
+import { decrypt, encrypt } from './utils/crypto';
 
 const INTERVAL = 0.04;
 
@@ -109,9 +109,10 @@ function App() {
 	useEffect(() => {
 		(async () => {
 			await invoke('write_log', { message: 'load file' });
-			const dir = await resourceDir();
-			const content = await readTextFile(`${dir}/output.bin`);
-			const data = JSON.parse(decompressFromUTF16(content));
+			const content = await readTextFile('output.bin', {
+				baseDir: BaseDirectory.Resource,
+			});
+			const data = JSON.parse(await decrypt(content));
 			originData.current = data;
 			setItems(data.services);
 			await invoke('write_log', { message: 'load file end' });
@@ -127,9 +128,10 @@ function App() {
 				setItems(data.services);
 				originData.current = data;
 
-				const compressText = compressToUTF16(content);
-				const dir = await resourceDir();
-				await writeTextFile(`${dir}/output.bin`, compressText);
+				const compressText = await encrypt(content);
+				await writeTextFile('output.bin', compressText, {
+					baseDir: BaseDirectory.Resource,
+				});
 			}
 		});
 		return () => {

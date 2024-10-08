@@ -1,4 +1,4 @@
-const pass = 'default-password';
+const pass = 'A&vgX!^%8@R$U4!';
 
 function arrayBufferToBinaryString(buffer: ArrayBuffer) {
 	let binary = '';
