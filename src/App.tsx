@@ -1,16 +1,15 @@
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
-import { FlatList, Text, View, TextInput, StyleSheet } from 'react-native-macos';
-import { getToken } from './utils';
-import { MyClipboardModule as Clipboard, eventEmitter, open_file } from './module';
 import debouce from 'lodash/debounce';
-import { ProgressCircleComponent } from './AnimatedProgressCircle';
-import { DataInterface, OtpItemInterface } from './types';
-import { ToastProvider, useToast } from 'react-native-toast-notifications';
 import { compressToUTF16, decompressFromUTF16 } from 'lz-string';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import RNFS from 'react-native-fs';
-import { TouchableOpacity } from 'react-native';
-import { useCircleTimer } from './useCircleTimer';
+import { FlatList, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native-macos';
 import { SharedValue } from 'react-native-reanimated';
+import { ToastProvider, useToast } from 'react-native-toast-notifications';
+import { ProgressCircleComponent } from './AnimatedProgressCircle';
+import { MyClipboardModule as Clipboard, eventEmitter, open_file } from './module';
+import { DataInterface, OtpItemInterface } from './types';
+import { useCircleTimer } from './useCircleTimer';
+import { getToken } from './utils';
 
 const styles = StyleSheet.create({
 	itemContainer: {
@@ -113,7 +112,6 @@ const App = () => {
 		};
 	}, []);
 
-	// eslint-disable-next-line react-hooks/exhaustive-deps
 	const onChangeText = useCallback(
 		debouce((text) => {
 			if (!originData.current) return;
@@ -128,7 +126,7 @@ const App = () => {
 				);
 			} else setItems(originData.current?.services);
 		}, 300),
-		[items],
+		[],
 	);
 
 	const [trigger, setTrigger] = useState(0);

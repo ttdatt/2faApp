@@ -7,7 +7,7 @@ import {
 	withRepeat,
 	withTiming,
 } from 'react-native-reanimated';
-import { circumference, TIME_FRAME } from './constants';
+import { TIME_FRAME, circumference } from './constants';
 
 const getRemainingSeconds = () => {
 	'worklet';

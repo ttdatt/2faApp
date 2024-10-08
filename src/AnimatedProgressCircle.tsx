@@ -1,8 +1,8 @@
 import React, { memo } from 'react';
-import { View, StyleSheet, TextInput } from 'react-native-macos';
-import { Svg, Circle } from 'react-native-svg';
+import { StyleSheet, TextInput, View } from 'react-native-macos';
 import Animated, { SharedValue } from 'react-native-reanimated';
-import { radius, circumference, origin } from './constants';
+import { Circle, Svg } from 'react-native-svg';
+import { circumference, origin, radius } from './constants';
 
 Animated.addWhitelistedNativeProps({ text: true });
 const AnimatedText = Animated.createAnimatedComponent(TextInput);
