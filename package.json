@@ -1,41 +1,48 @@
 {
-	"name": "authenticator-tauri",
-	"private": true,
-	"version": "1.3.0",
-	"type": "module",
-	"scripts": {
-		"dev": "vite",
-		"build": "tsc && vite build",
-		"preview": "vite preview",
-		"tauri": "tauri"
-	},
-	"dependencies": {
-		"@otplib/preset-browser": "^12.0.1",
-		"@radix-ui/react-icons": "^1.3.0",
-		"@radix-ui/react-label": "^2.0.2",
-		"@radix-ui/react-toast": "^1.1.5",
-		"@tauri-apps/api": "^1.5.2",
-		"class-variance-authority": "^0.7.0",
-		"clsx": "^2.1.0",
-		"lodash": "^4.17.21",
-		"lz-string": "^1.5.0",
-		"react": "^18.2.0",
-		"react-dom": "^18.2.0",
-		"tailwind-merge": "^2.2.0",
-		"tailwindcss-animate": "^1.0.7"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "1.5.2",
-		"@tauri-apps/cli": "^1.5.8",
-		"@types/lodash": "^4.14.202",
-		"@types/node": "^20.11.5",
-		"@types/react": "^18.2.15",
-		"@types/react-dom": "^18.2.7",
-		"@vitejs/plugin-react": "^4.2.1",
-		"autoprefixer": "^10.4.17",
-		"postcss": "^8.4.33",
-		"tailwindcss": "^3.4.1",
-		"typescript": "^5.0.2",
-		"vite": "^5.0.0"
-	}
+  "name": "authenticator",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "tauri": "tauri"
+  },
+  "dependencies": {
+    "@otplib/core": "^12.0.1",
+    "@otplib/plugin-base32-enc-dec": "^12.0.1",
+    "@otplib/plugin-crypto-js": "^12.0.1",
+    "@radix-ui/react-label": "^2.1.0",
+    "@radix-ui/react-toast": "^1.2.2",
+    "@tauri-apps/api": ">=2.0.0",
+    "@tauri-apps/plugin-clipboard-manager": "^2.0.0",
+    "@tauri-apps/plugin-dialog": "~2",
+    "@tauri-apps/plugin-fs": "~2",
+    "@tauri-apps/plugin-shell": ">=2.0.0",
+    "buffer": "^6.0.3",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
+    "lodash": "^4.17.21",
+    "lucide-react": "^0.447.0",
+    "lz-string": "^1.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tailwind-merge": "^2.5.3",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.3",
+    "@tauri-apps/cli": ">=2.0.0",
+    "@types/lodash": "^4.17.10",
+    "@types/node": "^22.7.5",
+    "@types/react": "^18.2.15",
+    "@types/react-dom": "^18.2.7",
+    "@vitejs/plugin-react": "^4.2.1",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.13",
+    "typescript": "5.6.2",
+    "vite": "^5.3.1"
+  }
 }
