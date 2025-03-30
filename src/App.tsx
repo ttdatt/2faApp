@@ -92,6 +92,7 @@ function App() {
 	const originData = useRef<DataInterface>();
 	const [items, setItems] = useState<OtpItemInterface[]>([]);
 	const ref = useRef<HTMLInputElement>(null);
+	const { toast } = useToast();
 
 	useEffect(() => {
 		const handleKeyDown = (e: KeyboardEvent) => {
@@ -99,12 +100,21 @@ function App() {
 				e.preventDefault();
 				ref.current?.focus();
 			}
+
+			if (e.metaKey && e.key === 'c') {
+				async function write() {
+					const otp = getToken(items[0].secret);
+					await writeText(otp);
+					toast({ description: otp });
+				}
+				write();
+			}
 		};
 		window.addEventListener('keydown', handleKeyDown);
 		return () => {
 			window.removeEventListener('keydown', handleKeyDown);
 		};
-	}, []);
+	}, [items?.[0]?.secret, toast]);
 
 	useEffect(() => {
 		(async () => {
@@ -138,6 +148,7 @@ function App() {
 			unlisten.then((f) => f());
 		};
 	}, []);
+
 	const onChangeText = useCallback(
 		debounce((e: React.ChangeEvent<HTMLInputElement>) => {
 			const text = e.target.value;
