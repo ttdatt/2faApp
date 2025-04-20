@@ -14,6 +14,7 @@ import { Label } from './components/ui/label';
 import CountdownCircle from './CountdownCircle';
 import { Toaster } from './components/ui/toaster';
 import { decrypt, encrypt } from './utils/crypto';
+import createFuzzySearch from '@nozbe/microfuzz';
 
 const INTERVAL = 0.04;
 
@@ -79,6 +80,7 @@ const List = ({ items }: { items: OtpItemInterface[] }) => {
 
 function App() {
 	const originData = useRef<DataInterface>(undefined);
+	const fuzzySearch = useRef<ReturnType<typeof createFuzzySearch<OtpItemInterface>>>(undefined);
 	const [items, setItems] = useState<OtpItemInterface[]>([]);
 	const [_isPending, startTransition] = useTransition();
 	const ref = useRef<HTMLInputElement>(null);
@@ -114,6 +116,9 @@ function App() {
 			});
 			const data = JSON.parse(await decrypt(content));
 			originData.current = data;
+			fuzzySearch.current = createFuzzySearch(originData.current?.services ?? [], {
+				getText: (item: OtpItemInterface) => [item.name + ' ' + item.otp.account],
+			});
 			setItems(data.services);
 			await invoke('write_log', { message: 'load file end' });
 		})();
@@ -128,6 +133,9 @@ function App() {
 				setItems(data.services);
 				originData.current = data;
 
+				fuzzySearch.current = createFuzzySearch(originData.current?.services ?? [], {
+					getText: (item: OtpItemInterface) => [item.name + ' ' + item.otp.account],
+				});
 				const compressText = await encrypt(content);
 				await writeTextFile('output.bin', compressText, {
 					baseDir: BaseDirectory.Resource,
@@ -145,14 +153,9 @@ function App() {
 		startTransition(async () => {
 			if (!originData.current) return;
 
-			if (text?.length > 0) {
-				setItems(
-					originData.current?.services?.filter(
-						(y) =>
-							y.name.toLowerCase().includes(text.toLowerCase()) ||
-							y.otp.account?.toLowerCase().includes(text.toLowerCase()),
-					) ?? [],
-				);
+			if (text?.length > 0 && fuzzySearch.current) {
+				const result = fuzzySearch.current(text);
+				setItems(result.map((x) => x.item));
 			} else setItems(originData.current?.services);
 		});
 	}, []);
