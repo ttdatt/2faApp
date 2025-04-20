@@ -1,9 +1,8 @@
 import './App.css';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState, useTransition } from 'react';
 import { invoke } from '@tauri-apps/api/core';
 import { Input } from '@/components/ui/input';
 import { DataInterface, OtpItemInterface } from './types';
-import { debounce } from 'lodash';
 import { BaseDirectory } from '@tauri-apps/api/path';
 import { readTextFile, writeTextFile } from '@tauri-apps/plugin-fs';
 import { open } from '@tauri-apps/plugin-dialog';
@@ -22,8 +21,7 @@ const ListItem = ({
 	x,
 	timeLeft,
 	trigger,
-	onClick,
-}: { x: OtpItemInterface; timeLeft: number; trigger: number; onClick?: () => void }) => {
+}: { x: OtpItemInterface; timeLeft: number; trigger: number }) => {
 	const { toast } = useToast();
 	const [otp, setOtp] = useState<string>(getToken(x.secret));
 
@@ -39,7 +37,6 @@ const ListItem = ({
 			onKeyDown={undefined}
 			onClick={async (e) => {
 				e.preventDefault();
-				onClick?.();
 				await writeText(otp);
 				toast({ description: otp });
 			}}>
@@ -53,7 +50,7 @@ const ListItem = ({
 	);
 };
 
-const List = ({ items, onClick }: { items: OtpItemInterface[]; onClick?: () => void }) => {
+const List = ({ items }: { items: OtpItemInterface[] }) => {
 	const [trigger, setTrigger] = useState(0);
 	const [timeLeft, setTimeLeft] = useState(getRemainingSeconds());
 	const flag = useRef(false);
@@ -76,21 +73,14 @@ const List = ({ items, onClick }: { items: OtpItemInterface[]; onClick?: () => v
 	}, []);
 
 	return items?.map((x) => {
-		return (
-			<ListItem
-				onClick={onClick}
-				x={x}
-				key={x.name + x.otp.account}
-				timeLeft={timeLeft}
-				trigger={trigger}
-			/>
-		);
+		return <ListItem x={x} key={x.name + x.otp.account} timeLeft={timeLeft} trigger={trigger} />;
 	});
 };
 
 function App() {
-	const originData = useRef<DataInterface>();
+	const originData = useRef<DataInterface>(undefined);
 	const [items, setItems] = useState<OtpItemInterface[]>([]);
+	const [_isPending, startTransition] = useTransition();
 	const ref = useRef<HTMLInputElement>(null);
 	const { toast } = useToast();
 
@@ -149,10 +139,10 @@ function App() {
 		};
 	}, []);
 
-	const onChangeText = useCallback(
-		debounce((e: React.ChangeEvent<HTMLInputElement>) => {
-			const text = e.target.value;
+	const onChangeText = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+		const text = e.target.value;
 
+		startTransition(async () => {
 			if (!originData.current) return;
 
 			if (text?.length > 0) {
@@ -161,12 +151,11 @@ function App() {
 						(y) =>
 							y.name.toLowerCase().includes(text.toLowerCase()) ||
 							y.otp.account?.toLowerCase().includes(text.toLowerCase()),
-					),
+					) ?? [],
 				);
 			} else setItems(originData.current?.services);
-		}, 300),
-		[],
-	);
+		});
+	}, []);
 
 	return (
 		<div className='flex flex-col pt-4 px-4'>
